@@ -1,0 +1,50 @@
+
+frameworkVersion: ">=1.21.0 <2.0.0"
+
+provider:
+  name: aws
+  runtime: nodejs6.10
+  stage: dev
+  region: us-east-1
+  environment:
+    NODE_ENV: ${env:NODE_ENV}
+  iamRoleStatements:
+  - Effect: Allow
+    Action:
+      - ses:SendEmail
+      - ses:SendRawEmail
+      - s3:PutObject
+      - s3:GetObject
+      - s3:DeleteObject
+    Resource: "*"
+
+plugins:
+  - serverless-plugin-typescript
+  - serverless-offline
+
+custom:
+  serverless-offline:
+    port: 4000
+
+package:
+  excludeDevDependencies: true
+  include:
+    - server/**/*.gql
+    - ormconfig.json
+
+functions:
+  fuck:
+    vpc:
+      securityGroupIds:
+        - sg-c2c193b1
+      subnetIds:
+        - subnet-9962a4d2
+        - subnet-ac949280
+        - subnet-7bc80644
+        - subnet-59cff403
+        - subnet-33b3943f
+        - subnet-2c01a948
+    handler: handler.fuck
+    events:
+      - http: ANY /
+      - http: 'ANY {proxy+}'
